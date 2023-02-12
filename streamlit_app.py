@@ -1,12 +1,19 @@
 import streamlit
 import snowflake.connector
+import pandas
 
-streamlit.title('My Parents New Healthy Diner')
+streamlit.title('Zena\'s Amazing Athleisure Catalog')
 
-
+# connect to Snowflake
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
-my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
-my_data_row = my_cur.fetchone()
-streamlit.text("Hello from Snowflake:")
-streamlit.text(my_data_row)
+
+# run a Snowflake query and put all in a var called my_catalog
+my_cur.execute("select color_or_style from catalog_for_website")
+my_catalog = my_cur.fetchall()
+
+# put the data into a dataframe
+df = pandas.DataFrame(my_catalog)
+
+# temp write the dataframe to the page so I can see what i am working with
+streamlit.write(df)
